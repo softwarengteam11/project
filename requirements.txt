@@ -1,0 +1,1 @@
+# Empty for now as Python standard libraries (tkinter, sqlite3) are sufficient for core requirements.

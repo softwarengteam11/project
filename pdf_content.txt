@@ -1,0 +1,93 @@
+--- PAGE 1 ---
+25WSB301 CW2 - Group Project  
+The "Smart-Task" Academic Project Manager 
+ 
+You have been assigned to a randomised Development Team of around 4-5 teammates 
+and will need to work as a group on this assessment. Groups will be allocated in week  
+ 
+1. Overview  
+The objective is to build a desktop software application that helps university students 
+manage their academic workload. The application must move beyond a simple "to-do list" 
+by incorporating data persistence, a clean user interface, and functional logic. 
+You will build on, develop and apply your knowledge of Python, Software Engineering, UI 
+and UX as delivered by your course tutors. 
+ 
+A. Core Functional Requirements 
+Each group must implement following features: 
+ Task Management: Create, Read, Update, and Delete (CRUD) functionality for 
+academic tasks (e.g., "Math Assignment," "Lab Report"). 
+ Deadline Tracker: A visual countdown or color-coded urgency system for upcoming 
+deadlines. 
+ Data Persistence: Use .csv file (or .json file, SQLite file) database to save and load 
+data so progress isn't lost when the app closes. 
+ Search & Filter: Ability to filter tasks by status (Completed/Pending) or priority level. 
+ Dashboard View: A summary screen showing total tasks, completed tasks, and the 
+next immediate deadline. 
+ 
+B. Software Engineering 
+Each group must employ and demonstrate the use of an industry standard Software 
+Development Lifecycle (SDLC). Use of the following techniques must be demonstrated 
+by all team members: 
+ Version Control: Use of GitHub to facilitate and evidence 
+o an engineering process via a decision record and well-structured repository. 
+o parallel work (branching) for feature development. 
+o Developer collaboration and merging of code with code conflict resolution. 
+ Unit and integration testing 
+ Project management using GitHub’s kanban style board and documentation 
+ The Github must be shared with a module tutor – to be covered in lecture and lab to 
+facilitate assessment. 
+ 
+C. Technical Requirements 
+ GUI Framework: Python Tkinter. 
+--- PAGE 2 ---
+ Architecture: Use Object-Oriented Programming (OOP) principles. Each major 
+window or component should be a class. 
+ Error Handling: Implementation of try-except blocks and Tkinter messagebox for user 
+input validation (e.g., preventing empty task names). 
+ 
+2. Submission Deliverables 
+Everyone in your group will need to submit a copy of the final assessment. 
+Group files 
+ A .zip file containing all Python scripts and data files. 
+ A requirements.txt file (if any external libraries like Pillow are used). 
+ The project report in PDF format. 
+Individual file 
+ Peer-review (WebPA) 
+ 
+Tip: Focus on the Controller logic. Ensure your UI (View) is strictly separated from your 
+data processing (Model) to keep the code manageable as the project grows. 
+ 
+3. Assessment Criteria 
+ 
+Category Criteria Marked Marks 
+Available 
+(%) 
+Version Control • Structure of Github repository facilitates project understanding 
+• Evidence of through-project use of branching and merging 
+supporting parallel development and conﬂict resolution 
+• Evidence of wide and effective use of commits and  
+20 
+Te sting • Appropriate unit testing of code functions and methods 
+• Appropriate integration testing 
+• Tests well documented and evidence in Project Management 
+15 
+Documentation Documentation which supports maintenance and development using 
+• Comprehensive README markdown ﬁle in Github repository 
+• Python embedded Docstrings for models, functions and classes  
+15 
+Code & OOP • Use of classes and OOP paradigm 
+• Code readability (meaningful variable names and appropriate 
+comments). 
+15 
+Data & Logic • Successful implementation of ﬁle I/O or database management. 15 
+Delivery of 
+requirements and 
+Robustness 
+• Core functional requirements delivered. 
+• UI - Robust and functional interface  
+• UX - Responsive and intuitive 
+20 
+ 
+ 
+ 
+ 
