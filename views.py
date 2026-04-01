@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import utils
+import calendar
+from datetime import datetime, timedelta
 
 class MainView(tk.Tk):
     def __init__(self):
@@ -27,6 +29,10 @@ class MainView(tk.Tk):
         # Task Management Tab
         self.tasks_tab = TasksTab(self.notebook)
         self.notebook.add(self.tasks_tab, text="Task Management")
+        
+        # Calendar Tab
+        self.calendar_tab = CalendarTab(self.notebook)
+        self.notebook.add(self.calendar_tab, text="Calendar")
 
 class DashboardTab(ttk.Frame):
     def __init__(self, parent):
@@ -51,6 +57,117 @@ class DashboardTab(ttk.Frame):
         self.total_label.config(text=f"Total Tasks: {total}")
         self.completed_label.config(text=f"Completed Tasks: {completed}")
         self.next_deadline_label.config(text=f"Next Immediate Deadline: {next_deadline_info}")
+
+class CalendarTab(ttk.Frame):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.current_date = datetime.now().date()
+        self.tasks = []
+        
+        # Navigation
+        nav_frame = ttk.Frame(self)
+        nav_frame.pack(fill="x", pady=10, padx=10)
+        
+        self.prev_btn = ttk.Button(nav_frame, text="< Prev Month", command=self.prev_month)
+        self.prev_btn.pack(side="left", padx=5)
+        
+        self.month_label = ttk.Label(nav_frame, text="", font=("Helvetica", 16, "bold"))
+        self.month_label.pack(side="left", expand=True)
+        
+        self.next_btn = ttk.Button(nav_frame, text="Next Month >", command=self.next_month)
+        self.next_btn.pack(side="right", padx=5)
+        
+        # Main content area
+        content_frame = ttk.Frame(self)
+        content_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        
+        # Grid for calendar
+        self.cal_frame = ttk.Frame(content_frame)
+        self.cal_frame.pack(side="left", fill="both", expand=True)
+        
+        # Side panel for tasks of selected day
+        self.side_panel = ttk.LabelFrame(content_frame, text="Tasks for Selected Day")
+        self.side_panel.pack(side="right", fill="y", padx=10)
+        
+        self.day_tasks_listbox = tk.Listbox(self.side_panel, width=35, font=("Helvetica", 10))
+        self.day_tasks_listbox.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        self.build_calendar()
+        
+    def prev_month(self):
+        first_day = self.current_date.replace(day=1)
+        prev_month_last_day = first_day - timedelta(days=1)
+        self.current_date = prev_month_last_day.replace(day=1)
+        self.build_calendar()
+        
+    def next_month(self):
+        days_in_month = calendar.monthrange(self.current_date.year, self.current_date.month)[1]
+        next_month_first_day = self.current_date.replace(day=days_in_month) + timedelta(days=1)
+        self.current_date = next_month_first_day
+        self.build_calendar()
+
+    def set_tasks(self, tasks):
+        self.tasks = tasks
+        self.build_calendar()
+        
+    def build_calendar(self):
+        for widget in self.cal_frame.winfo_children():
+            widget.destroy()
+            
+        year = self.current_date.year
+        month = self.current_date.month
+        
+        self.month_label.config(text=f"{calendar.month_name[month]} {year}")
+        
+        days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+        for i, d in enumerate(days):
+            lbl = ttk.Label(self.cal_frame, text=d, font=("Helvetica", 10, "bold"), anchor="center")
+            lbl.grid(row=0, column=i, sticky="nsew", padx=1, pady=1)
+            self.cal_frame.columnconfigure(i, weight=1)
+            
+        cal = calendar.monthcalendar(year, month)
+        
+        for row, week in enumerate(cal):
+            self.cal_frame.rowconfigure(row+1, weight=1)
+            for col, day in enumerate(week):
+                if day == 0:
+                    frm = ttk.Frame(self.cal_frame, relief="ridge", borderwidth=1)
+                    frm.grid(row=row+1, column=col, sticky="nsew", padx=1, pady=1)
+                else:
+                    date_str = f"{year}-{month:02d}-{day:02d}"
+                    day_tasks = [t for t in self.tasks if t.deadline == date_str]
+                    
+                    frame = tk.Frame(self.cal_frame, relief="ridge", borderwidth=1, bg="white")
+                    frame.grid(row=row+1, column=col, sticky="nsew", padx=1, pady=1)
+                    
+                    # Make it clickable
+                    frame.bind("<Button-1>", lambda e, d=date_str, t=day_tasks: self.show_tasks_for_day(d, t))
+                    
+                    lbl = tk.Label(frame, text=str(day), bg="white", font=("Helvetica", 10))
+                    lbl.pack(anchor="ne", padx=2, pady=2)
+                    lbl.bind("<Button-1>", lambda e, d=date_str, t=day_tasks: self.show_tasks_for_day(d, t))
+                    
+                    if day_tasks:
+                        pending = len([t for t in day_tasks if t.status == "Pending"])
+                        completed = len([t for t in day_tasks if t.status == "Completed"])
+                        
+                        indicator_text = []
+                        if pending > 0: indicator_text.append(f"{pending} pending")
+                        if completed > 0: indicator_text.append(f"{completed} done")
+                        
+                        t_lbl = tk.Label(frame, text="\\n".join(indicator_text), bg="white", fg="#cc0000" if pending > 0 else "green", font=("Helvetica", 8))
+                        t_lbl.pack(anchor="center", expand=True)
+                        t_lbl.bind("<Button-1>", lambda e, d=date_str, t=day_tasks: self.show_tasks_for_day(d, t))
+
+    def show_tasks_for_day(self, date_str, tasks):
+        self.side_panel.config(text=f"Tasks: {date_str}")
+        self.day_tasks_listbox.delete(0, tk.END)
+        if not tasks:
+            self.day_tasks_listbox.insert(tk.END, "No tasks scheduled.")
+        else:
+            for t in tasks:
+                prefix = "[✓]" if t.status == "Completed" else "[ ]"
+                self.day_tasks_listbox.insert(tk.END, f"{prefix} {t.title}")
 
 class TasksTab(ttk.Frame):
     def __init__(self, parent):

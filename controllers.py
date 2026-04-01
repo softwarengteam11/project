@@ -46,6 +46,13 @@ class AppController:
         # 3. Update dashboard stats (always uses unfiltered data for overall stats)
         self.update_dashboard()
 
+        # 4. Update calendar view
+        all_tasks = self.db.get_all_tasks()
+        try:
+            self.view.calendar_tab.set_tasks(all_tasks)
+        except AttributeError:
+            pass
+
     def update_dashboard(self):
         all_tasks = self.db.get_all_tasks()
         total = len(all_tasks)
