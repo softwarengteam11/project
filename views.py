@@ -13,6 +13,29 @@ class MainView(tk.Tk):
             # Use 'clam' theme for a better cross-platform look
             self.style = ttk.Style(self)
             self.style.theme_use('clam')
+            
+            # Configure black and orange theme
+            bg_color = "#121212"
+            fg_color = "#FFA500"
+            alt_bg = "#1e1e1e"
+            
+            self.configure(bg=bg_color)
+            
+            self.style.configure(".", background=bg_color, foreground=fg_color, fieldbackground=alt_bg, insertcolor=fg_color)
+            self.style.configure("TLabel", background=bg_color, foreground=fg_color)
+            self.style.configure("TFrame", background=bg_color)
+            self.style.configure("TButton", background=alt_bg, foreground=fg_color, borderwidth=1)
+            self.style.map("TButton", background=[("active", fg_color)], foreground=[("active", bg_color)])
+            self.style.configure("TNotebook", background=bg_color)
+            self.style.configure("TNotebook.Tab", background=alt_bg, foreground=fg_color, padding=[10, 2])
+            self.style.map("TNotebook.Tab", background=[("selected", fg_color)], foreground=[("selected", bg_color)])
+            
+            self.style.configure("Treeview", background=alt_bg, fieldbackground=alt_bg, foreground="#ffffff")
+            self.style.configure("Treeview.Heading", background=bg_color, foreground=fg_color)
+            self.style.map("Treeview", background=[("selected", fg_color)], foreground=[("selected", bg_color)])
+            
+            self.style.configure("TLabelframe", background=bg_color, foreground=fg_color)
+            self.style.configure("TLabelframe.Label", background=bg_color, foreground=fg_color)
         except tk.TclError:
             pass
         
@@ -44,7 +67,7 @@ class DashboardTab(ttk.Frame):
         self.completed_label = ttk.Label(frame, text="Completed Tasks: 0", font=("Helvetica", 14))
         self.completed_label.grid(row=0, column=1, padx=20, pady=10)
         
-        self.next_deadline_label = ttk.Label(self, text="Next Immediate Deadline: None", font=("Helvetica", 16, "bold"), foreground="#cc0000")
+        self.next_deadline_label = ttk.Label(self, text="Next Immediate Deadline: None", font=("Helvetica", 16, "bold"), foreground="#FF4500")
         self.next_deadline_label.pack(pady=40)
 
     def update_metrics(self, total, completed, next_deadline_info):
@@ -90,11 +113,11 @@ class TasksTab(ttk.Frame):
             self.tree.column(col, width=width, anchor="center")
             
         # Deadline Tracker tags
-        self.tree.tag_configure("red", background="#ffcccc")
-        self.tree.tag_configure("orange", background="#ffe5b4")
-        self.tree.tag_configure("goldenrod", background="#fffacd")
-        self.tree.tag_configure("forest green", background="#d4edda")
-        self.tree.tag_configure("black", background="#e9ecef", foreground="#6c757d")
+        self.tree.tag_configure("red", background="#4a1515", foreground="#ffcccc")
+        self.tree.tag_configure("orange", background="#4a2e15", foreground="#ffe5b4")
+        self.tree.tag_configure("goldenrod", background="#4a4215", foreground="#fffacd")
+        self.tree.tag_configure("forest green", background="#154a22", foreground="#d4edda")
+        self.tree.tag_configure("black", background="#2a2a2a", foreground="#888888")
 
         scrollbar = ttk.Scrollbar(list_frame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscroll=scrollbar.set)
@@ -152,6 +175,7 @@ class TaskForm(tk.Toplevel):
         self.title("Task Details")
         self.geometry("350x380")
         self.resizable(False, False)
+        self.configure(bg="#121212")
         self.grab_set()  # Modal window
         
         self.task = task
