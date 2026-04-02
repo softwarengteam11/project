@@ -28,6 +28,36 @@ class MainView(tk.Tk):
         self.tasks_tab = TasksTab(self.notebook)
         self.notebook.add(self.tasks_tab, text="Task Management")
 
+        # Settings Tab
+        self.settings_tab = SettingsTab(self.notebook, self)
+        self.notebook.add(self.settings_tab, text="Settings")
+        
+        self.apply_theme("Light Mode")
+
+    def apply_theme(self, mode):
+        style = ttk.Style(self)
+        if mode == "Dark Mode":
+            bg_color = "#2d2d2d"
+            fg_color = "white"
+            btn_bg = "#404040"
+            self.tk_setPalette(background=bg_color, foreground=fg_color, activeBackground=btn_bg, activeForeground=fg_color)
+        else: # Light Mode
+            bg_color = "#f0f0f0"
+            fg_color = "black"
+            btn_bg = "#e0e0e0"
+            self.tk_setPalette(background=bg_color, foreground=fg_color, activeBackground=btn_bg, activeForeground=fg_color)
+            
+        self.configure(bg=bg_color)
+        style.theme_use('clam')
+        style.configure(".", background=bg_color, foreground=fg_color)
+        style.configure("TLabel", background=bg_color, foreground=fg_color)
+        style.configure("TFrame", background=bg_color)
+        style.configure("TButton", background=btn_bg, foreground=fg_color)
+        style.configure("TLabelframe", background=bg_color, foreground=fg_color)
+        style.configure("TLabelframe.Label", background=bg_color, foreground=fg_color)
+        style.configure("TNotebook", background=bg_color)
+        style.configure("TNotebook.Tab", background=btn_bg, foreground=fg_color)
+
 class DashboardTab(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
@@ -230,3 +260,26 @@ class TaskForm(tk.Toplevel):
             "status": status
         }
         self.destroy()
+
+class SettingsTab(ttk.Frame):
+    def __init__(self, parent, main_view):
+        super().__init__(parent)
+        self.main_view = main_view
+        
+        header = ttk.Label(self, text="Settings", font=("Helvetica", 24, "bold"))
+        header.pack(pady=30)
+        
+        settings_frame = ttk.Frame(self)
+        settings_frame.pack(pady=10)
+        
+        ttk.Label(settings_frame, text="Theme:", font=("Helvetica", 14)).grid(row=0, column=0, padx=10, pady=10, sticky="e")
+        
+        self.theme_var = tk.StringVar(value="Light Mode")
+        self.theme_combo = ttk.Combobox(settings_frame, textvariable=self.theme_var, values=["Light Mode", "Dark Mode"], state="readonly", font=("Helvetica", 12))
+        self.theme_combo.grid(row=0, column=1, padx=10, pady=10, sticky="w")
+        self.theme_combo.bind("<<ComboboxSelected>>", self.on_theme_change)
+
+    def on_theme_change(self, event):
+        selected_theme = self.theme_var.get()
+        self.main_view.apply_theme(selected_theme)
+
